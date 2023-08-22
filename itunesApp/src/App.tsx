@@ -3,9 +3,9 @@ import {Text, View, SafeAreaView} from 'react-native';
 
 function App(): JSX.Element {
   return (
-    <SafeAreaView>
-      <View>
-        <Text>Hello</Text>
+    <SafeAreaView className="flex-1">
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-xl text-blue-500 dark:text-white">Hello</Text>
       </View>
     </SafeAreaView>
   );
