@@ -11,7 +11,12 @@ export const ListItem = ({label, image, price}: Item) => {
         <TouchableOpacity className="absolute top-1 right-1 z-10">
           <Heart color={getThemeColors()?.secondary as string} />
         </TouchableOpacity>
-        <Image source={{uri: image}} className="w-full h-full" />
+        <Image
+          testID="img"
+          accessibilityRole="image"
+          source={{uri: image}}
+          className="w-full h-full"
+        />
       </View>
       <View className="flex-1 p-1 gap-2">
         <Text numberOfLines={2} className="text-base font-semibold">
