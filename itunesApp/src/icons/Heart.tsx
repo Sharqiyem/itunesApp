@@ -1,15 +1,16 @@
 import React from 'react';
-import {Svg, Path} from 'react-native-svg';
-import {IconProps} from 'types';
+import {Svg, Path, SvgProps} from 'react-native-svg';
 import {getThemeColors} from 'utils';
 
 export const Heart = ({
   width = 22,
   height = 19,
   color = getThemeColors()?.primary as string,
-}: IconProps) => {
+  testID = '',
+}: SvgProps & {testID?: string}) => {
   return (
     <Svg
+      testID={testID}
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}

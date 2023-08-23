@@ -1,12 +1,11 @@
 import React from 'react';
-import {Svg, Path} from 'react-native-svg';
-import {IconProps} from 'types';
+import {Svg, Path, SvgProps} from 'react-native-svg';
 
 export const MagnifyingGlass = ({
   width = 21,
   height = 21,
   color = '#B3B3B3',
-}: IconProps) => {
+}: SvgProps) => {
   return (
     <Svg
       width={width}

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList as RNFlatList,
   StyleSheet,
@@ -8,11 +8,11 @@ import {
   View,
 } from 'react-native';
 import {ListItem} from 'components';
-import {items} from 'data';
 import {Item} from 'types';
 import {styled} from 'nativewind';
-import {Heart} from 'icons';
-import {MagnifyingGlass} from 'icons/MagnifyingGlass';
+import {Close, Heart, MagnifyingGlass} from 'icons';
+import {useDataQuery, useDebounce} from 'hooks';
+import {getThemeColors} from 'utils';
 
 const Seperator = () => <View className="h-2" />;
 
@@ -25,6 +25,19 @@ export const FlatList = styled(RNFlatList as new () => RNFlatList, {
 
 export const MainScreen = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const {isLoading, error, isSuccess, data} = useDataQuery();
+  const [filterdData, setFilterdData] = useState<Item[]>([]);
+  const debouncedValue = useDebounce<string>(searchTerm, 1000);
+
+  useEffect(() => {
+    const filteredItems = data?.filter(item =>
+      item.label.includes(debouncedValue),
+    );
+    if (filteredItems) {
+      setFilterdData(filteredItems);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue]);
 
   const renderSearchInput = () => {
     return (
@@ -43,11 +56,11 @@ export const MainScreen = () => {
         />
         {searchTerm !== '' ? (
           <TouchableOpacity
-            className="absolute top-3 right-3"
+            className="absolute top-3 right-3 "
             onPress={() => {
               setSearchTerm('');
             }}>
-            <Text className="font-bold">X</Text>
+            <Close color={getThemeColors()?.gray['500'] as string} />
           </TouchableOpacity>
         ) : null}
       </View>
@@ -62,6 +75,34 @@ export const MainScreen = () => {
     );
   };
 
+  const renderList = () => {
+    if (isLoading) {
+      return <Text className="text-center mt-3">Loading</Text>;
+    }
+    if (error) {
+      return (
+        <Text className="text-center mt-3">
+          {(error as {message: string}).message}
+        </Text>
+      );
+    }
+
+    if (isSuccess) {
+      return (
+        <FlatList
+          className="p-3"
+          contentContainerStyle="pb-10"
+          data={searchTerm === '' ? data : filterdData}
+          numColumns={2}
+          horizontal={false}
+          keyExtractor={item => item.label}
+          renderItem={renderItem}
+          ItemSeparatorComponent={Seperator}
+          columnWrapperStyle={styles.row}
+        />
+      );
+    }
+  };
   return (
     <View className="flex-1 ">
       {/* Header */}
@@ -72,22 +113,12 @@ export const MainScreen = () => {
           </Text>
         </View>
         <View className="">
-          <Heart />
+          <Heart testID="heartIcon" />
         </View>
       </View>
       {renderSearchInput()}
 
-      <FlatList
-        className="p-3"
-        contentContainerStyle="pb-10"
-        data={items}
-        numColumns={2}
-        horizontal={false}
-        keyExtractor={item => item.label}
-        renderItem={renderItem}
-        ItemSeparatorComponent={Seperator}
-        columnWrapperStyle={styles.row}
-      />
+      {renderList()}
     </View>
   );
 };
