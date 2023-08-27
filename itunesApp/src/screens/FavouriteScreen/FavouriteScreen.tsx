@@ -28,7 +28,7 @@ export const FavouriteScreen = () => {
 
   const renderSearchInput = () => {
     return (
-      <View className="mx-3">
+      <View className="mx-3 mt-3">
         <View className="absolute top-3 left-3">
           <MagnifyingGlass />
         </View>
