@@ -9,5 +9,8 @@
 4. Translate UI to react native code [DONE]
 5. Add main features [DONE]
 6. Add additional features
+   6.1 Pull to refresh [DONE]
+   6.2 Deatils screen with shared element [DONE]
+   6.3 Favorite functionality [DONE]
 7. Testing
 8. Push code

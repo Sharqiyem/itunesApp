@@ -1,6 +1,3 @@
-// export ComponentWrapper = props =>{
-//     return <Component {...props} >{props.children}</Component>
-// }
 import React, {ReactElement} from 'react';
 import {
   QueryClient,

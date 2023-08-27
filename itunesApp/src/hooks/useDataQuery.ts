@@ -12,6 +12,7 @@ export const useDataQuery = () => {
     data: useMemo(
       () =>
         queryInfo?.data?.feed?.entry.map((item: Entry) => ({
+          id: item.id.attributes['im:id'],
           label: item.title.label,
           image: item['im:image'][item['im:image'].length - 1].label,
           price: item['im:price'].label,

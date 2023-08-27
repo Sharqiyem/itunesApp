@@ -1,43 +1,47 @@
 import React, {useEffect, useState} from 'react';
 import {
-  FlatList as RNFlatList,
+  RefreshControl,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {ListItem} from 'components';
+import {ListItem, StyledList} from 'components';
 import {Item} from 'types';
-import {styled} from 'nativewind';
 import {Close, Heart, MagnifyingGlass} from 'icons';
-import {useDataQuery, useDebounce} from 'hooks';
-import {getThemeColors} from 'utils';
+import {useDataQuery} from 'hooks/useDataQuery';
+import {useDebounce} from 'hooks/useDebounce';
+import {getThemeColors, filterData} from 'utils';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useNavigation} from '@react-navigation/native';
+import {FavouriteNativeStackNavigationProp} from 'navigation/types';
 
 const Seperator = () => <View className="h-2" />;
 
-export const FlatList = styled(RNFlatList as new () => RNFlatList, {
-  props: {
-    contentContainerStyle: true,
-    columnWrapperStyle: true,
-  },
-});
-
 export const MainScreen = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const {isLoading, error, isSuccess, data} = useDataQuery();
+  const {isLoading, error, isSuccess, isRefetching, data, refetch} =
+    useDataQuery();
   const [filterdData, setFilterdData] = useState<Item[]>([]);
   const debouncedValue = useDebounce<string>(searchTerm, 1000);
+  const navigation = useNavigation<FavouriteNativeStackNavigationProp>();
 
   useEffect(() => {
-    const filteredItems = data?.filter(item =>
-      item.label.includes(debouncedValue),
-    );
+    const filteredItems = data?.filter(filterData(debouncedValue));
     if (filteredItems) {
       setFilterdData(filteredItems);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
+
+  const onRefresh = () => {
+    refetch?.();
+  };
+
+  const openFavourite = () => {
+    navigation.navigate('Favourite');
+  };
 
   const renderSearchInput = () => {
     return (
@@ -68,16 +72,18 @@ export const MainScreen = () => {
   };
 
   const renderItem = ({item}: {item: Item}) => {
+    const {id, ...rest} = item;
+
     return (
       <View className="flex-1">
-        <ListItem {...item} />
+        <ListItem {...rest} id={id} tag="main" />
       </View>
     );
   };
 
   const renderList = () => {
     if (isLoading) {
-      return <Text className="text-center mt-3">Loading</Text>;
+      return <Text className="text-center mt-3">Loading...</Text>;
     }
     if (error) {
       return (
@@ -89,7 +95,8 @@ export const MainScreen = () => {
 
     if (isSuccess) {
       return (
-        <FlatList
+        <StyledList
+          testID="mainList"
           className="p-3"
           contentContainerStyle="pb-10"
           data={searchTerm === '' ? data : filterdData}
@@ -99,12 +106,16 @@ export const MainScreen = () => {
           renderItem={renderItem}
           ItemSeparatorComponent={Seperator}
           columnWrapperStyle={styles.row}
+          refreshControl={
+            <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
+          }
         />
       );
     }
   };
+
   return (
-    <View className="flex-1 ">
+    <SafeAreaView className="flex-1 bg-screen">
       {/* Header */}
       <View className="my-3 flex-row justify-between px-3 items-center">
         <View>
@@ -112,14 +123,15 @@ export const MainScreen = () => {
             Albums Searcher
           </Text>
         </View>
-        <View className="">
+        <TouchableOpacity onPress={openFavourite} className="">
           <Heart testID="heartIcon" />
-        </View>
+        </TouchableOpacity>
       </View>
+
       {renderSearchInput()}
 
       {renderList()}
-    </View>
+    </SafeAreaView>
   );
 };
 

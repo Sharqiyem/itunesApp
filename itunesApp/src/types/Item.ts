@@ -1,7 +1,12 @@
 export interface Item {
+  id: string;
   label: string;
   price: string;
   image: string;
+}
+
+export interface ItemWithTag extends Item {
+  tag: string;
 }
 
 export interface ApiItem {
@@ -14,6 +19,11 @@ export interface Entry {
   'im:image': ImImage[];
   'im:price': ImPrice;
   title: Title;
+  id: {
+    attributes: {
+      'im:id': string;
+    };
+  };
 }
 export interface ImImage {
   label: string;
