@@ -14,3 +14,14 @@
    6.3 Favorite functionality [DONE]
 7. Testing [DONE]
 8. Push code [DONE]
+
+## 🛠 Tech and Libraries
+
+- [React Native](https://reactnative.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [React Navigation](https://reactnavigation.org/): Routing and navigation
+- [React Query](https://react-query.tanstack.com/): Fetching, caching, synchronizing and updating server state
+- [NativeWind](https://www.nativewind.dev/): uses Tailwind CSS to create a universal style system for React Native
+- [Axios](https://github.com/axios/axios): Promise based HTTP client
+- [Async Storage](https://react-native-async-storage.github.io/async-storage/): Data storage system
+- [@testing-library/react-native](https://testing-library.com/docs/react-native-testing-library/intro/) React Native Testing Library
